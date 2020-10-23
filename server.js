@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 3000;
 // const db = require("./models");
 const BookController = require("./controllers/bookController");
 const AuthorController = require("./controllers/authorController");
+const UserController = require("./controllers/userController");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -40,6 +41,7 @@ app.get("/api/config", (req, res) => {
 
 app.use("/api/book", BookController);
 app.use("/api/author", AuthorController);
+app.use("/api/user", UserController);
 
 app.listen(PORT, () => {
   console.log(`App is running on http://localhost:${PORT}`);

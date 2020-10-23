@@ -30,9 +30,9 @@ AuthorSchema.virtual("fullName").get(function () {
   return `${this.firstName} ${this.lastName}`;
 });
 
-AuthorSchema.virtual("numBooks").get(function(){
-    return this.books.length;
-})
+// AuthorSchema.virtual("numBooks").get(function(){
+//     return this.books.length;
+// })
 
 const Author = mongoose.model("Author", AuthorSchema);
 

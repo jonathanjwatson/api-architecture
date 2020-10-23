@@ -1,11 +1,21 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../models")
+const db = require("../models");
 
 router.get("/", (req, res) => {
-  db.Book.find({}).then((foundBooks) => {
-    res.json(foundBooks);
-  });
+  db.Book.find({})
+    .populate("author", "firstName lastName")
+    .then((foundBooks) => {
+      res.json(foundBooks);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: true,
+        data: null,
+        message: "Failed to retrieve all books.",
+      });
+    });
 });
 
 router.get("/:id", (req, res) => {
