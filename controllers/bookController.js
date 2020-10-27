@@ -1,21 +1,47 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const router = express.Router();
 const db = require("../models");
 
 router.get("/", (req, res) => {
-  db.Book.find({})
-    .populate("author", "firstName lastName")
-    .then((foundBooks) => {
-      res.json(foundBooks);
-    })
-    .catch((err) => {
+  // Check for user-provided token.
+  // If token, decode it.
+  // If valid token, find books.
+  // Else 401
+  console.log(req.headers);
+  if (!req.headers.authorization) {
+    return res.status(401).json({
+      error: true,
+      data: null,
+      message: "Unauthorized.",
+    });
+  }
+  jwt.verify(req.headers.authorization, process.env.SECRET, (err, decoded) => {
+    if (err) {
       console.log(err);
-      res.status(500).json({
+      return res.status(401).json({
         error: true,
         data: null,
-        message: "Failed to retrieve all books.",
+        message: "Invalid token.",
       });
-    });
+    } else {
+      console.log(decoded);
+
+      db.Book.find({})
+        .populate("author", "firstName lastName")
+        .then((foundBooks) => {
+          res.json(foundBooks);
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json({
+            error: true,
+            data: null,
+            message: "Failed to retrieve all books.",
+          });
+        });
+    }
+  });
 });
 
 router.get("/:id", (req, res) => {

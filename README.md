@@ -53,3 +53,18 @@ To create a Book, with an authorId as a foreign key, what must I have FIRST?
 
 I MUST have an author. 
 I MUST have that author's id. 
+
+
+3. Authorization
+
+* Should I be authorized before viewing all books? - NO
+* Should I be authorized before creating a book? - YES
+* Should I be authorized before editing a book? - YES
+
+
+
+Create a Book Authorization
+* Anyone with a valid account can create a book. 
+
+Edit a Book Authorization
+* The individual who created a book can edit it. 

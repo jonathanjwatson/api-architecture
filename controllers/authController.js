@@ -9,21 +9,34 @@ const db = require("../models");
 
 router.post("/api/signup", (req, res) => {
   const { emailAddress, password } = req.body;
-  console.log(emailAddress);
-  console.log(password);
+  //   console.log(emailAddress);
+  //   console.log(password);
   if (!emailAddress.trim() || !password.trim()) {
     res.status(400);
   } else {
     bcrypt
       .hash(password, 10)
       .then((hashedPassword) => {
-        console.log(hashedPassword);
+        // console.log(hashedPassword);
         db.User.create({
           emailAddress: emailAddress,
           password: hashedPassword,
         })
           .then((newUser) => {
-            res.json(newUser);
+            const token = jwt.sign(
+              {
+                _id: newUser._id,
+                emailAddress: newUser.emailAddress,
+                firstName: newUser.firstName,
+                lastName: newUser.lastName,
+              },
+              process.env.SECRET
+            );
+            res.json({
+              error: false,
+              data: token,
+              message: "Successfully signed up.",
+            });
           })
           .catch((err) => {
             console.log(err);
@@ -64,11 +77,12 @@ router.post("/api/login", (req, res) => {
               // TODO: lock down the token with a time frame
               const token = jwt.sign(
                 {
+                  _id: newUser._id,
                   emailAddress: foundUser.emailAddress,
                   firstName: foundUser.firstName,
                   lastName: foundUser.lastName,
                 },
-                "shhhhh"
+                process.env.SECRET
               );
               res.json({
                 error: false,
